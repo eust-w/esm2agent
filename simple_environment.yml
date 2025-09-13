@@ -1,0 +1,8 @@
+name: esm_env
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.9
+  - pytorch
+  - pip
