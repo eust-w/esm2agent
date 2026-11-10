@@ -44,7 +44,7 @@ enc = tok(seq, return_tensors="pt")
 ids0, attn = enc["input_ids"][0], enc["attention_mask"][0]
 
 leaks, examples = 0, []
-BS = 4
+BS = 2
 for s in range(0, L, BS):
     chunk = list(range(s + 1, min(s + BS, L) + 1))
     ids = ids0.unsqueeze(0).repeat(len(chunk), 1).clone()
