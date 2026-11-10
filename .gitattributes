@@ -1,0 +1,11 @@
+# Git sniffed the report PDF as text and offered to rewrite its line endings,
+# which corrupts the file on a CRLF checkout. Mark binaries explicitly.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.svg -text
+*.pt binary
+*.safetensors binary
+
+# Keep shell scripts LF so they stay runnable.
+*.sh text eol=lf

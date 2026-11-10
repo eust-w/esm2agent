@@ -8,6 +8,9 @@ from typing import List, Tuple, Dict, Optional
 import os
 import argparse
 
+# The 20 standard amino acids. ESM-2's vocabulary is larger.
+STANDARD_AMINO_ACIDS = "ACDEFGHIKLMNPQRSTVWY"
+
 class ESMMutationPredictor:
     """
     A class for predicting protein mutations using the ESM-2 language model.
@@ -23,7 +26,12 @@ class ESMMutationPredictor:
             model_name: Name of the ESM-2 model to use
         """
         print(f"Loading {model_name} model...")
-        self.device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+        if torch.cuda.is_available():
+            self.device = torch.device("cuda")
+        elif torch.backends.mps.is_available():
+            self.device = torch.device("mps")
+        else:
+            self.device = torch.device("cpu")
         print(f"Using device: {self.device}")
         
         # Load the ESM-2 model
@@ -34,8 +42,16 @@ class ESMMutationPredictor:
         # Get the batch converter
         self.batch_converter = self.alphabet.get_batch_converter()
         
-        # Map from token indices to amino acids
-        self.index_to_aa = {i: a for i, a in enumerate(self.alphabet.all_toks) if a != '<cls>' and a != '<pad>' and a != '<eos>' and a != '<unk>' and a != '<mask>'}
+        # Map from token indices to amino acids.
+        #
+        # Restricted to the 20 standard amino acids on purpose. ESM-2's vocabulary
+        # also contains the single-character tokens X B U Z O . and -, so filtering
+        # the special tokens by name and then keeping everything of length 1 lets
+        # those through, and they can reach the top-k as a "mutation" to an unknown
+        # residue or a gap.
+        self.index_to_aa = {
+            self.alphabet.get_idx(a): a for a in STANDARD_AMINO_ACIDS
+        }
         
         print("Model loaded successfully!")
     
@@ -119,8 +135,7 @@ class ESMMutationPredictor:
             # Get amino acid probabilities (exclude special tokens)
             aa_probs = {}
             for token_idx, aa in self.index_to_aa.items():
-                if len(aa) == 1:  # Only consider single amino acids
-                    aa_probs[aa] = probs[token_idx]
+                aa_probs[aa] = probs[token_idx]
             
             # Sort amino acids by probability
             sorted_aas = sorted(aa_probs.items(), key=lambda x: x[1], reverse=True)
