@@ -44,7 +44,10 @@ python -m pip install fair-esm numpy pandas matplotlib seaborn \
 python mutation_prediction.py --help
 ```
 
-The first prediction downloads ESM-2 weights. The predictor defaults to `esm2_t33_650M_UR50D` and selects **Apple MPS or CPU**; CUDA is not automatically selected by the current implementation.
+The first prediction downloads ESM-2 weights. The predictor defaults to `esm2_t33_650M_UR50D` and selects a device in the order **CUDA → Apple MPS → CPU**.
+
+> [!TIP]
+> To scan a whole sequence, rank by LLR, or get a PDF report carrying the weight checksum and the sanity-check results, see [`fullscan/`](fullscan/).
 
 ```bash
 python mutation_prediction.py \
@@ -136,6 +139,7 @@ The larger `environment.yml` names its environment `esmfold` and pins older CUDA
 | [combo_mutation_design.py](combo_mutation_design.py) | Combination ranking and diversity |
 | [advanced_combo_mutation_design.py](advanced_combo_mutation_design.py) | Structure/domain-assisted ranking |
 | [generate_heatmap.py](generate_heatmap.py) | CSV-to-heatmap rendering |
+| [fullscan/](fullscan/) | Full-sequence scan, LLR ranking, sanity checks and PDF report |
 | [visualize_structure.py](visualize_structure.py) | Structure visualization helper |
 
 ## License and provenance

@@ -1,0 +1,7 @@
+# Model weights — fetch with fetch_weights.sh, never commit (2.4 GB).
+hf/
+
+# Scan output. example/results/ is committed on purpose and is not matched here.
+/results/
+*.log
+__pycache__/

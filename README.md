@@ -45,7 +45,10 @@ python -m pip install fair-esm numpy pandas matplotlib seaborn \
 python mutation_prediction.py --help
 ```
 
-首次预测会下载 ESM-2 权重。当前预测器默认加载 `esm2_t33_650M_UR50D`，自动选择 **Apple MPS 或 CPU**，尚未自动选择 CUDA。
+首次预测会下载 ESM-2 权重。当前预测器默认加载 `esm2_t33_650M_UR50D`，按 **CUDA → Apple MPS → CPU** 的顺序自动选择设备。
+
+> [!TIP]
+> 需要扫描整条序列、按 LLR 排序、或要一份带权重校验和与自检结果的 PDF 报告，见 [`fullscan/`](fullscan/)。
 
 ```bash
 python mutation_prediction.py \
@@ -142,6 +145,7 @@ python generate_heatmap.py --help
 | [advanced_combo_mutation_design.py](advanced_combo_mutation_design.py) | 结构 / 功能域辅助排序 |
 | [generate_heatmap.py](generate_heatmap.py) | CSV 到热图 |
 | [visualize_structure.py](visualize_structure.py) | 结构展示辅助脚本 |
+| [fullscan/](fullscan/) | 全序列扫描、LLR 排序、自检与 PDF 报告 |
 
 ## 许可证与来源
 
